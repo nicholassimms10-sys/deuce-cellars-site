@@ -36,19 +36,18 @@ html.pour-in::before { top: -34px; height: 35px; background: var(--wave) 0 100% 
 .pour.go { transform: none; }
 
 /* ---- Headlines rise word by word ------------------------------------------ */
-.m .hero .display:not(.split), .m .page-hero .display:not(.split) { opacity: 0; }
-.display.split { text-wrap: wrap; }
+.m .hero .display:not(.words), .m .page-hero .display:not(.words) { opacity: 0; }
 .display .w { display: inline-block; overflow: hidden; vertical-align: top; white-space: nowrap; padding-bottom: .14em; margin-bottom: -.14em; }
 .display em .w { padding-right: .1em; margin-right: -.1em; }
 .display .w > span { display: inline-block; }
-.m .display.split .w > span {
+.m .display.words .w > span {
   transform: translateY(112%) rotate(4deg); transform-origin: 0 100%;
   animation: word-up 1.15s var(--ease-lux) forwards; animation-delay: calc(.25s + var(--wi, 0) * 75ms);
 }
 @keyframes word-up { to { transform: none; } }
 /* Once every word is up, the headline goes back to plain text layout */
-.display.split.words-done .w { overflow: visible; }
-.m .display.split.words-done .w > span { animation: none; transform: none; }
+.display.words.words-done .w { overflow: visible; }
+.m .display.words.words-done .w > span { animation: none; transform: none; }
 
 /* Everything else in the opening frame fades up after the headline */
 @keyframes fade-up { from { opacity: 0; transform: translate3d(0, 26px, 0); } to { opacity: 1; transform: none; } }

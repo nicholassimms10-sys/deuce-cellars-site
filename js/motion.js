@@ -59,7 +59,7 @@
       });
     }
     walk(el);
-    el.classList.add('split');
+    el.classList.add('words');
   }
 
   // ---- Scroll reveals ----------------------------------------------------------
