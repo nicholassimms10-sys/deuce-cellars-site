@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where to Buy — Deuce Cellars</title>
+<meta name="description" content="Find Deuce Cellars Reserve Syrah at shops and restaurants across Oregon and Vancouver, Washington. Search by name, city or ZIP code.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="announce"><a href="wines.html#library">Limited availability of older vintages, 2011 to 2018 · <span>See the library</span></a></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a class="brand" href="index.html"><img src="images/logo.webp" alt="Deuce Cellars" width="800" height="246"></a>
+    <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <nav class="site-nav" aria-label="Main">
+      <a href="wines.html">Shop</a>
+      <a href="where-to-buy.html">Where to Buy</a>
+      <a href="story.html">Our Story</a>
+      <a href="world.html">Around the World</a>
+      <a href="visit.html">Tastings</a>
+      <a href="visit.html#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-hero page-hero--short">
+    <img src="images/bottle-grapes.webp" alt="" style="object-position: 50% 45%">
+    <div class="wrap">
+      <span class="eyebrow">Where to buy</span>
+      <h1 class="display">Find a bottle near you.</h1>
+      <p class="lede">Deuce is poured and sold at <span data-loc-count>57</span> shops and restaurants across Oregon and in Vancouver, Washington.</p>
+    </div>
+  </section>
+
+  <section class="section finder-section">
+    <div class="wrap finder">
+      <div class="finder-panel">
+        <form class="finder-search" id="loc-form" role="search">
+          <label for="loc-q" class="sr-only">Search by name, city or ZIP code</label>
+          <input id="loc-q" type="search" placeholder="Search by name, city or ZIP" autocomplete="off" enterkeyhint="search">
+          <button class="btn" type="submit">Search</button>
+        </form>
+        <div class="finder-tools">
+          <div class="chips" role="group" aria-label="Show">
+            <button type="button" class="chip" data-cat="all" aria-pressed="true">All</button>
+            <button type="button" class="chip" data-cat="store" aria-pressed="false">Shops</button>
+            <button type="button" class="chip" data-cat="restaurant" aria-pressed="false">Restaurants &amp; bars</button>
+          </div>
+          <button type="button" class="near-me" id="loc-near">Use my location</button>
+        </div>
+        <p class="finder-status" id="loc-status" aria-live="polite"></p>
+        <div class="finder-list" id="loc-list"></div>
+      </div>
+
+      <div class="finder-map">
+        <div class="map-views" role="group" aria-label="Map view">
+          <button type="button" class="chip" data-view="oregon" aria-pressed="true">All Oregon</button>
+          <button type="button" class="chip" data-view="portland" aria-pressed="false">Portland area</button>
+        </div>
+        <svg id="loc-map" role="img" aria-label="Map of Oregon showing every shop and restaurant that carries Deuce" preserveAspectRatio="xMidYMid meet"></svg>
+        <div class="map-legend">
+          <span><i class="dot-key dot-key--store"></i>Shops</span>
+          <span><i class="dot-key dot-key--restaurant"></i>Restaurants &amp; bars</span>
+          <span class="map-hint">Tap a dot to find it in the list</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--parchment signup">
+    <div class="wrap">
+      <span class="eyebrow">Don’t see your spot?</span>
+      <h2 class="h2">Ask for Deuce by name.</h2>
+      <p class="lede">Tell us where you’d like to find it, or bring Deuce to your restaurant, shop or club. We reply personally.</p>
+      <div class="actions">
+        <a class="btn" href="mailto:deucecellars@gmail.com?subject=Where%20can%20I%20find%20Deuce%3F">Email us</a>
+        <a class="link-arrow" href="tel:+15032018868">(503) 201-8868</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <img class="footer-logo" src="images/logo.webp" alt="Deuce Cellars" loading="lazy">
+        <p>Big, luscious Washington Syrah from Moonlight Vineyard in the Walla Walla Valley. Fewer than 300 cases a year.</p>
+      </div>
+      <div>
+        <h4>Explore</h4>
+        <ul>
+          <li><a href="wines.html">Shop the wines</a></li>
+          <li><a href="where-to-buy.html">Where to buy</a></li>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="world.html">Around the world</a></li>
+          <li><a href="visit.html">Private tastings</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:deucecellars@gmail.com">deucecellars@gmail.com</a></li>
+          <li><a href="tel:+15032018868">(503) 201-8868</a></li>
+          <li>Lake Oswego, Oregon</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Follow</h4>
+        <ul>
+          <li><a href="https://facebook.com/deucecellars/" target="_blank" rel="noopener">Facebook</a></li>
+          <li><a href="https://www.instagram.com/deucecellarssyrah/" target="_blank" rel="noopener">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>© <span data-year-now>2026</span> Deuce Cellars · Produced and bottled at Five Star Cellars, Walla Walla, WA · Distributed in Oregon by Foodie Wines, LLC</p>
+      <p>Please enjoy responsibly. You must be 21 or older to purchase wine.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/wines.js"></script>
+<script src="js/locations.js"></script>
+<script src="js/site.js"></script>
+<script src="js/where.js"></script>
+</body>
+</html>
