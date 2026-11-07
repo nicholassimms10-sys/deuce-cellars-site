@@ -192,39 +192,99 @@
     });
   }
 
-  // Tap a bottle to see it large, with the label readable
+  // Tap a bottle or a travel photo to see it large. Photos from the same wall can be stepped through.
   function lightbox() {
-    var box = null, lastFocus = null;
+    document.querySelectorAll('.gallery figure, .strip figure').forEach(function (f) {
+      var img = f.querySelector('img'), cap = f.querySelector('figcaption');
+      if (!img) return;
+      var text = cap ? cap.textContent : img.alt;
+      img.setAttribute('data-zoom', img.getAttribute('src'));
+      img.setAttribute('data-caption', text);
+      img.setAttribute('tabindex', '0');
+      img.setAttribute('role', 'button');
+      img.setAttribute('aria-label', 'Enlarge photo: ' + text);
+      f.parentNode.setAttribute('data-zoom-group', '');
+    });
+    var box = null, lastFocus = null, set = [], at = 0;
     function close() {
       if (!box) return;
       box.remove(); box = null;
       document.body.classList.remove('no-scroll');
       if (lastFocus) lastFocus.focus();
     }
-    document.addEventListener('click', function (e) {
-      var t = e.target.closest('[data-zoom]');
-      if (!t) return;
+    function caption(t) {
+      return esc(t.getAttribute('data-caption')) +
+        (set.length > 1 ? '<span class="lightbox-count">' + (at + 1) + ' / ' + set.length + '</span>' : '');
+    }
+    function step(d) {
+      if (!box || set.length < 2) return;
+      at = (at + d + set.length) % set.length;
+      var t = set[at], img = box.querySelector('img');
+      img.classList.add('is-swap');
+      setTimeout(function () {
+        if (!box) return;
+        img.onload = function () { img.classList.remove('is-swap'); };
+        img.src = t.getAttribute('data-zoom');
+        img.alt = t.getAttribute('data-caption');
+        box.querySelector('figcaption').innerHTML = caption(t);
+        box.setAttribute('aria-label', t.getAttribute('data-caption'));
+        if (img.complete) img.classList.remove('is-swap');
+      }, 200);
+    }
+    function open(t) {
       lastFocus = t;
+      var group = t.closest('[data-zoom-group]');
+      set = group ? Array.prototype.filter.call(group.querySelectorAll('[data-zoom]'), function (el) { return !el.closest('[hidden]'); }) : [t];
+      at = Math.max(0, set.indexOf(t));
       box = document.createElement('div');
       box.className = 'lightbox';
       box.setAttribute('role', 'dialog');
       box.setAttribute('aria-modal', 'true');
       box.setAttribute('aria-label', t.getAttribute('data-caption'));
       box.innerHTML = '<figure><img src="' + esc(t.getAttribute('data-zoom')) + '" alt="' + esc(t.getAttribute('data-caption')) + '">' +
-        '<figcaption>' + esc(t.getAttribute('data-caption')) + '</figcaption></figure>' +
+        '<figcaption>' + caption(t) + '</figcaption></figure>' +
+        (set.length > 1 ? '<button type="button" class="lightbox-nav lightbox-prev" aria-label="Previous photo">‹</button>' +
+          '<button type="button" class="lightbox-nav lightbox-next" aria-label="Next photo">›</button>' : '') +
         '<button type="button" class="lightbox-close" aria-label="Close">×</button>';
-      box.addEventListener('click', function (ev) { if (ev.target === box || ev.target.closest('.lightbox-close')) close(); });
+      box.addEventListener('click', function (ev) {
+        if (ev.target.closest('.lightbox-prev')) return step(-1);
+        if (ev.target.closest('.lightbox-next')) return step(1);
+        if (ev.target === box || ev.target.closest('.lightbox-close')) close();
+      });
+      // Swipe left or right on a phone to change photo
+      var sx = null;
+      box.addEventListener('touchstart', function (ev) { sx = ev.touches[0].clientX; }, { passive: true });
+      box.addEventListener('touchend', function (ev) {
+        if (sx === null) return;
+        var dx = ev.changedTouches[0].clientX - sx;
+        sx = null;
+        if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+      });
       document.body.appendChild(box);
       document.body.classList.add('no-scroll');
       box.querySelector('.lightbox-close').focus();
+    }
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest('[data-zoom]');
+      if (t && !box) open(t);
     });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+    document.addEventListener('keydown', function (e) {
+      if (box) {
+        if (e.key === 'Escape') close();
+        else if (e.key === 'ArrowRight') step(1);
+        else if (e.key === 'ArrowLeft') step(-1);
+        return;
+      }
+      // Photos are pictures, not buttons, so open them with Enter or Space too
+      var t = e.target;
+      if ((e.key === 'Enter' || e.key === ' ') && t.matches && t.matches('img[data-zoom]')) { e.preventDefault(); open(t); }
+    });
   }
 
   function ageGate() {
     var ok = false;
     try { ok = localStorage.getItem('deuce-21') === 'yes'; } catch (e) {}
-    if (ok) return;
+    if (ok) { document.documentElement.classList.remove('gate-up'); return; }
     var gate = document.createElement('div');
     gate.className = 'age-gate';
     gate.setAttribute('role', 'dialog');
@@ -242,8 +302,10 @@
       if (!b) return;
       if (b.getAttribute('data-age') === 'yes') {
         try { localStorage.setItem('deuce-21', 'yes'); } catch (err) {}
-        gate.remove();
         document.body.classList.remove('no-scroll');
+        document.documentElement.classList.remove('gate-up');   // lets the opening animation play
+        gate.classList.add('is-leaving');
+        setTimeout(function () { gate.remove(); }, document.documentElement.classList.contains('m') ? 450 : 0);
       } else {
         gate.querySelector('.age-copy').textContent = 'Sorry — you must be of legal drinking age to visit this site.';
         gate.querySelector('.age-actions').remove();
