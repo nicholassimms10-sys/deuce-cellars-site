@@ -72,11 +72,13 @@ html.pour-in::before { top: -34px; height: 35px; background: var(--wave) 0 100% 
   transition-delay: var(--rd, 0ms);
 }
 .m .rv.in { opacity: 1; transform: none; }
-/* Pictures open like a curtain instead */
-.m .pm.rv { opacity: 1; transform: none; clip-path: inset(0 0 100% 0); transition: clip-path 1.4s var(--ease-lux); transition-delay: var(--rd, 0ms); }
-.m .pm.rv.in { clip-path: inset(0 0 0 0); }
-.m .pm.rv img { scale: 1.25; transition: scale 1.8s var(--ease-lux); transition-delay: var(--rd, 0ms); }
-.m .pm.rv.in img { scale: 1; }
+/* Pictures open like a curtain instead. The figure is what's watched: a fully clipped
+   element doesn't count as on screen, so the clip sits on the frame inside it. */
+.m .split-media.rv { opacity: 1; transform: none; }
+.m .split-media.rv .pm { clip-path: inset(0 0 100% 0); transition: clip-path 1.4s var(--ease-lux); transition-delay: var(--rd, 0ms); }
+.m .split-media.rv.in .pm { clip-path: inset(0 0 0 0); }
+.m .split-media.rv .pm img { scale: 1.25; transition: scale 1.8s var(--ease-lux); transition-delay: var(--rd, 0ms); }
+.m .split-media.rv.in .pm img { scale: 1; }
 
 /* Picture frames used for parallax and hover zoom */
 .pm { display: block; overflow: hidden; position: relative; }

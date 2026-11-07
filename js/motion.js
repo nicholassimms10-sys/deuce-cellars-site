@@ -68,7 +68,7 @@
     '.section .muted', '.section .actions', '.release-name', '.facts', '.buy-row', '.section .fine',
     '.award', '.wine-card', '.vertical-card', '.method > div', '.contact-grid > div', '.quote',
     '.stat-row', '.strip figure', '.gallery figure', '.purchase-note', '.places', '.scrub',
-    '.bigword .lede', '.bigword .actions', '.footer-grid > div', '.split-media .pm', '.timeline li',
+    '.bigword .lede', '.bigword .actions', '.footer-grid > div', '.split-media', '.timeline li',
     '.release-stage'
   ];
 
@@ -557,11 +557,11 @@
     order.sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
     var bar = document.createElement('div');
     bar.className = 'places';
-    bar.innerHTML = '<p class="places-count"><b>' + figs.length + '</b> photos <b>' + order.length + '</b> countries</p>' +
+    bar.innerHTML = '<p class="places-count"><b>' + figs.length + '</b> photos · <b>' + order.length + '</b> countries</p>' +
       '<div class="chips" role="group" aria-label="Show photos from">' +
       ['All'].concat(order).map(function (p) {
         return '<button type="button" class="chip" data-place="' + esc(p) + '" aria-pressed="' + (p === 'All') + '">' +
-          esc(p) + '<i>' + (p === 'All' ? figs.length : counts[p]) + '</i></button>';
+          esc(p) + ' <i>' + (p === 'All' ? figs.length : counts[p]) + '</i></button>';
       }).join('') + '</div>';
     g.parentNode.insertBefore(bar, g);
     bar.addEventListener('click', function (e) {
