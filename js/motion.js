@@ -377,7 +377,7 @@
       try { url = new URL(a.href, location.href); } catch (err) { return; }
       if (url.origin !== location.origin) return;
       if (url.pathname === location.pathname && url.search === location.search) return;
-      if (!/(\.html|\/)$/.test(url.pathname)) return;
+      if (!/(\.html|\/|\/[^.\/]+)$/.test(url.pathname)) return;   // pages, including Netlify's clean addresses like /wines
       e.preventDefault();
       try { sessionStorage.setItem('deuce-pour', '1'); } catch (err) {}
       if (!pour) {
@@ -399,7 +399,7 @@
     var fetched = {};
     document.addEventListener('pointerover', function (e) {
       var a = e.target.closest && e.target.closest('a[href]');
-      if (!a || a.origin !== location.origin || !/\.html$/.test(a.pathname)) return;
+      if (!a || a.origin !== location.origin || !/(\.html|\/[^.\/]+)$/.test(a.pathname)) return;
       var href = a.href.split('#')[0];
       if (fetched[href] || href === location.href.split('#')[0]) return;
       fetched[href] = true;

@@ -155,9 +155,11 @@
         });
       });
     }
-    var here = location.pathname.split('/').pop() || 'index.html';
+    // Netlify serves pages at clean addresses (/wines) as well as /wines.html, so compare page names only
+    var page = function (p) { return (p.split('#')[0].split('/').pop() || 'index').replace(/\.html$/, ''); };
+    var here = page(location.pathname);
     document.querySelectorAll('.site-nav a').forEach(function (a) {
-      if (a.getAttribute('href') === here) a.setAttribute('aria-current', 'page');
+      if (a.getAttribute('href').indexOf('#') === -1 && page(a.getAttribute('href')) === here) a.setAttribute('aria-current', 'page');
     });
     var onScroll = function () { if (header) header.classList.toggle('is-scrolled', window.scrollY > 8); };
     window.addEventListener('scroll', onScroll, { passive: true });
