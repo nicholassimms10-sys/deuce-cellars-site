@@ -171,7 +171,11 @@
       var media = sec.querySelector('.hero-video, .page-hero > img, .hero > img');
       var content = sec.querySelector('.hero-content, .wrap');
       var title = sec.querySelector('.display');
-      if (title) splitWords(title);
+      if (title) {
+        splitWords(title);
+        var words = title.querySelectorAll('.w > span'), lastWord = words[words.length - 1];
+        if (lastWord) lastWord.addEventListener('animationend', function () { title.classList.add('words-done'); });
+      }
       watch(sec);
       onFrame(function (y) {
         if (!seen(sec)) return;
