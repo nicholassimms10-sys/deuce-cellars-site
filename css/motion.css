@@ -1,7 +1,7 @@
 /* Deuce Cellars — movement layer.
    Animation rules sit under html.m, which the head script sets only when the visitor
    hasn't asked their device for reduced motion. Without it the site looks as before.
-   The vintage scrubber, gallery filter and stat bars work in both modes. */
+   The vintage scrubber and stat bars work in both modes. */
 
 :root { --ease-out: cubic-bezier(.2, .7, .2, 1); --ease-lux: cubic-bezier(.16, .84, .24, 1); }
 
@@ -85,12 +85,24 @@ html.pour-in::before { top: -34px; height: 35px; background: var(--wave) 0 100% 
 /* Picture frames used for parallax and hover zoom */
 .pm { display: block; overflow: hidden; position: relative; }
 .m .split-media .pm img { transform: translate3d(0, var(--py, 0px), 0) scale(1.14); will-change: transform; }
-.ph { display: block; overflow: hidden; }
-.ph img { transition: transform 1.4s var(--ease-lux), filter .6s; }
-@media (hover: hover) {
-  .m .strip figure:hover .ph img, .m .gallery figure:hover .ph img { transform: scale(1.06); }
+
+/* Drifting photo walls: the photo under the pointer leans in */
+.drift [data-zoom] { cursor: zoom-in; }
+.drift-row.is-dragging [data-zoom] { cursor: grabbing; }
+.drift img { transition: transform 1.2s var(--ease-lux), filter .6s; }
+@media (hover: hover) and (pointer: fine) {
+  .drift figure { overflow: hidden; }
+  .m .drift figure:hover img { transform: scale(1.04); }
+  .m .drift-row.is-dragging figure:hover img { transform: none; }
 }
-.strip [data-zoom], .gallery [data-zoom] { cursor: zoom-in; }
+
+/* The framed corks settle onto the wall beside the mailing list */
+.m .signup--cork .cork.rv { opacity: 0; transform: translate3d(0, 30px, 0) rotate(-3deg) scale(.94); transition: opacity 1s var(--ease-out), transform 1.6s var(--ease-lux); }
+.m .signup--cork .cork.rv.in { opacity: 1; transform: none; }
+@media (hover: hover) {
+  .signup--cork .cork img { transition: transform 1s var(--ease-lux), box-shadow 1s var(--ease-lux); }
+  .m .signup--cork .cork:hover img { transform: rotate(-1.2deg) scale(1.02); box-shadow: 0 24px 50px -24px rgba(20, 13, 11, .45); }
+}
 
 /* Vertical lineups: the bottles step up into place one by one */
 .m .vt-bottle { opacity: 0; transform: translate3d(0, 40px, 0); transition: opacity .8s var(--ease-out), transform 1s var(--ease-lux); }
@@ -230,13 +242,6 @@ html.pour-in::before { top: -34px; height: 35px; background: var(--wave) 0 100% 
   .m .nav-open .site-nav a:nth-child(6) { animation-delay: .2s; }
 }
 
-/* ---- Home travel strip: drag to browse ------------------------------------ */
-@media (hover: hover) and (pointer: fine) { .strip { cursor: grab; } }
-.strip.is-drag { cursor: grabbing; scroll-snap-type: none; user-select: none; }
-.strip.is-drag img { pointer-events: none; }
-.m .strip figure { transition: transform .6s var(--ease-lux); }
-.strip-hint { display: block; margin-top: 18px; text-align: center; font: 500 12px/1 var(--cond); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-3); }
-
 /* ---- Map dots drop in the first time the map draws ------------------------ */
 .m .map-intro .dot { transform-box: fill-box; transform-origin: 50% 50%; animation: dot-in .6s var(--ease-out) both; }
 .m .map-intro .dot:nth-child(4n+2) { animation-delay: .08s; }
@@ -330,11 +335,3 @@ html.pour-in::before { top: -34px; height: 35px; background: var(--wave) 0 100% 
   .scrub-ticks button.is-on span { visibility: visible; }
 }
 
-/* ---- World page: places filter -------------------------------------------- */
-.places { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin-bottom: 36px; }
-.places-count { font: 500 13px/1.3 var(--cond); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
-.places-count b { font: 500 22px/1 var(--serif); letter-spacing: 0; color: var(--wine); margin-right: 4px; }
-.chip i { font-style: normal; opacity: .6; margin-left: 4px; }
-.gallery figure { transition: opacity .35s, transform .5s var(--ease-out); }
-.gallery figure.is-out, .m .gallery figure.is-out { opacity: 0; transform: scale(.96); }
-.gallery figure[hidden] { display: none; }

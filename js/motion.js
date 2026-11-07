@@ -1,5 +1,5 @@
 /* Deuce Cellars — movement: scroll reveals, parallax, tilting bottles, the pour between pages,
-   the vintage scrubber on the Wines page and the places filter on Around the World.
+   the vintage scrubber on the Wines page, and a few touches on the drifting photo walls.
    Anything that moves only runs when html has the class "m", which the head script sets
    unless the visitor's device asks for reduced motion. No libraries. */
 (function () {
@@ -67,7 +67,7 @@
     '.section .eyebrow', '.section .h2', '.section .caps-heading', '.section-head p', '.section .lede',
     '.section .muted', '.section .actions', '.release-name', '.facts', '.buy-row', '.section .fine',
     '.award', '.wine-card', '.vertical-card', '.method > div', '.contact-grid > div', '.quote',
-    '.stat-row', '.strip figure', '.gallery figure', '.purchase-note', '.places', '.scrub',
+    '.stat-row', '.purchase-note', '.scrub', '.signup--cork .cork',
     '.bigword .lede', '.bigword .actions', '.footer-grid > div', '.split-media', '.timeline li',
     '.release-stage'
   ];
@@ -156,12 +156,6 @@
         var p = clamp((r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2), -1, 1);
         img.style.setProperty('--py', (p * r.height * 0.06).toFixed(1) + 'px');
       });
-    });
-    $$('.strip figure > img, .gallery figure > img').forEach(function (img) {
-      var ph = document.createElement('span');
-      ph.className = 'ph';
-      img.parentNode.insertBefore(ph, img);
-      ph.appendChild(img);
     });
   }
 
@@ -303,45 +297,9 @@
     document.addEventListener('mouseout', function (e) { if (!e.relatedTarget) c.classList.remove('is-on'); });
   }
 
-  // ---- Home travel strip: drag it with the mouse, with a little glide -------------
-  function strips() {
-    if (!fine) return;
-    $$('.strip').forEach(function (s) {
-      s.setAttribute('data-cursor', 'Drag');
-      var down = false, moved = false, sx = 0, sl = 0, vx = 0, lastX = 0, lastT = 0, raf = null;
-      s.addEventListener('dragstart', function (e) { e.preventDefault(); });
-      s.addEventListener('pointerdown', function (e) {
-        if (e.pointerType !== 'mouse' || e.button !== 0) return;
-        down = true; moved = false; sx = lastX = e.clientX; sl = s.scrollLeft; lastT = performance.now(); vx = 0;
-        if (raf) cancelAnimationFrame(raf);
-      });
-      window.addEventListener('pointermove', function (e) {
-        if (!down) return;
-        var dx = e.clientX - sx;
-        if (!moved && Math.abs(dx) > 5) { moved = true; s.classList.add('is-drag'); }
-        if (!moved) return;
-        s.scrollLeft = sl - dx;
-        var now = performance.now();
-        vx = (e.clientX - lastX) / Math.max(1, now - lastT);
-        lastX = e.clientX; lastT = now;
-      });
-      window.addEventListener('pointerup', function () {
-        if (!down) return;
-        down = false;
-        if (!moved) return;
-        var v = -vx * 16;
-        (function glide() {
-          s.scrollLeft += v;
-          v *= 0.93;
-          if (Math.abs(v) > 0.5) raf = requestAnimationFrame(glide);
-          else { raf = null; s.classList.remove('is-drag'); }
-        })();
-      });
-      // A drag isn't a tap: don't open the photo after dragging
-      s.addEventListener('click', function (e) {
-        if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
-      }, true);
-    });
+  // ---- The drifting photo walls: the cursor ring says what a drag does ----------------
+  function driftCursor() {
+    $$('[data-drift]').forEach(function (d) { d.setAttribute('data-cursor', 'Drag'); });
   }
 
   // ---- Story timeline: a line of wine runs down the years ------------------------
@@ -547,65 +505,10 @@
     io.observe(host);
   }
 
-  // ---- Around the World: filter the photos by country -------------------------------
-  function places() {
-    var g = document.querySelector('.gallery[data-places]');
-    if (!g) return;
-    var figs = $$('figure', g), counts = {}, order = [];
-    figs.forEach(function (f) {
-      var p = f.getAttribute('data-place');
-      if (!p) return;
-      if (!counts[p]) { counts[p] = 0; order.push(p); }
-      counts[p]++;
-    });
-    order.sort(function (a, b) { return counts[b] - counts[a] || a.localeCompare(b); });
-    var bar = document.createElement('div');
-    bar.className = 'places';
-    bar.innerHTML = '<p class="places-count"><b>' + figs.length + '</b> photos · <b>' + order.length + '</b> countries</p>' +
-      '<div class="chips" role="group" aria-label="Show photos from">' +
-      ['All'].concat(order).map(function (p) {
-        return '<button type="button" class="chip" data-place="' + esc(p) + '" aria-pressed="' + (p === 'All') + '">' +
-          esc(p) + ' <i>' + (p === 'All' ? figs.length : counts[p]) + '</i></button>';
-      }).join('') + '</div>';
-    g.parentNode.insertBefore(bar, g);
-    bar.addEventListener('click', function (e) {
-      var b = e.target.closest('.chip');
-      if (!b) return;
-      var p = b.getAttribute('data-place');
-      $$('.chip', bar).forEach(function (c) { c.setAttribute('aria-pressed', c === b ? 'true' : 'false'); });
-      var k = 0;
-      figs.forEach(function (f) {
-        var show = p === 'All' || f.getAttribute('data-place') === p;
-        if (show) {
-          if (f.hidden) {
-            f.hidden = false;
-            f.classList.remove('rv');
-            if (M) {
-              f.classList.add('is-out');
-              f.style.transitionDelay = (Math.min(k++, 8) * 50) + 'ms';
-              requestAnimationFrame(function () { requestAnimationFrame(function () { f.classList.remove('is-out'); }); });
-              setTimeout(function () { f.style.transitionDelay = ''; }, 900);
-            }
-          } else {
-            f.classList.remove('is-out');
-          }
-        } else if (!f.hidden) {
-          if (M) {
-            f.classList.add('is-out');
-            setTimeout(function () { if (f.classList.contains('is-out')) f.hidden = true; }, 320);
-          } else {
-            f.hidden = true;
-          }
-        }
-      });
-    });
-  }
-
   document.addEventListener('DOMContentLoaded', function () {
     prepCounters();
     statBars();
     scrubber();
-    places();
     if (!M) return;
     frames();
     heroes();
@@ -615,7 +518,7 @@
     reveals();
     magnets();
     cursorRing();
-    strips();
+    driftCursor();
     pours();
     mapIntro();
     var header = document.querySelector('.site-header');

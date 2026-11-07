@@ -8,8 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/motion.css?v=5">
+<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/motion.css?v=6">
 <script>/* Turns on the site's movement unless the device asks for reduced motion */(function(d){var c=d.documentElement.classList;try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}c.add('m');try{if(sessionStorage.getItem('deuce-pour')){sessionStorage.removeItem('deuce-pour');c.add('pour-in')}}catch(e){}try{if(localStorage.getItem('deuce-21')!=='yes')c.add('gate-up')}catch(e){c.add('gate-up')}setTimeout(function(){if(!c.contains('m-ok'))c.remove('m','pour-in','gate-up')},4000)})(document)</script>
 </head>
 <body>
@@ -111,11 +111,23 @@
         <div>
           <span class="eyebrow">Coming soon</span>
           <h2 class="caps-heading">Resting in the cellar</h2>
-          <p>Finished, bottled and waiting until they’re ready. Tap Notify me and we’ll email you on release day.</p>
+          <p>The 2020 to 2023 vintages are finished, bottled and waiting until they’re ready. The 2024 and 2025 are still in Missouri oak. Tap Notify me and we’ll email you on release day.</p>
         </div>
       </div>
       <div class="wine-grid wine-grid--3">
         <div data-wines="coming" data-full style="display:contents"></div>
+        <article class="wine-card">
+          <div class="tile tile--photo">
+            <span class="tile-chip">2024</span>
+            <img src="images/barrels.webp" alt="Oak barrels stacked in racks at the winery" loading="lazy">
+          </div>
+          <div class="wine-card__body">
+            <h3 class="wine-name">2024 Reserve Syrah</h3>
+            <p class="wine-meta">In barrel now</p>
+            <p class="wine-note">The 2024 harvest is in Missouri oak now. It will stay there close to three years before we bottle it.</p>
+            <div class="wine-buy"><span class="price price--soon">In barrel</span><a class="btn btn-ghost" href="mailto:hello@deucecellars.com?subject=Add%20me%20to%20the%20Deuce%20list">Join the list</a></div>
+          </div>
+        </article>
         <article class="wine-card">
           <div class="tile tile--photo">
             <span class="tile-chip">2025</span>
@@ -124,8 +136,8 @@
           <div class="wine-card__body">
             <h3 class="wine-name">2025 Reserve Syrah</h3>
             <p class="wine-meta">In barrel now</p>
-            <p class="wine-note">This year’s harvest went into Missouri oak this fall. It will stay there close to three years before we bottle it.</p>
-            <div class="wine-buy"><span class="price price--soon">In barrel</span><a class="btn btn-ghost" href="mailto:deucecellars@gmail.com?subject=Add%20me%20to%20the%20Deuce%20list">Join the list</a></div>
+            <p class="wine-note">The 2025 harvest went into Missouri oak last fall. It will stay there close to three years before we bottle it.</p>
+            <div class="wine-buy"><span class="price price--soon">In barrel</span><a class="btn btn-ghost" href="mailto:hello@deucecellars.com?subject=Add%20me%20to%20the%20Deuce%20list">Join the list</a></div>
           </div>
         </article>
       </div>
@@ -154,7 +166,7 @@
       <div>
         <h4>Contact</h4>
         <ul>
-          <li><a href="mailto:deucecellars@gmail.com">deucecellars@gmail.com</a></li>
+          <li><a href="mailto:hello@deucecellars.com">hello@deucecellars.com</a></li>
           <li><a href="tel:+15032018868">(503) 201-8868</a></li>
           <li>Lake Oswego, Oregon</li>
         </ul>
@@ -174,8 +186,8 @@
   </div>
 </footer>
 
-<script src="js/wines.js"></script>
-<script src="js/site.js?v=3"></script>
-<script src="js/motion.js?v=5"></script>
+<script src="js/wines.js?v=2"></script>
+<script src="js/site.js?v=4"></script>
+<script src="js/motion.js?v=6"></script>
 </body>
 </html>

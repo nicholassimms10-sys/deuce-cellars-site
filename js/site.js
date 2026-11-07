@@ -207,6 +207,7 @@
       img.setAttribute('aria-label', 'Enlarge photo: ' + text);
       f.parentNode.setAttribute('data-zoom-group', '');
     });
+    document.querySelectorAll('[data-drift]').forEach(function (d) { d.setAttribute('data-zoom-group', ''); });
     var box = null, lastFocus = null, set = [], at = 0;
     function close() {
       if (!box) return;
@@ -236,8 +237,12 @@
     function open(t) {
       lastFocus = t;
       var group = t.closest('[data-zoom-group]');
-      set = group ? Array.prototype.filter.call(group.querySelectorAll('[data-zoom]'), function (el) { return !el.closest('[hidden]'); }) : [t];
-      at = Math.max(0, set.indexOf(t));
+      set = group ? Array.prototype.filter.call(group.querySelectorAll('[data-zoom]'), function (el) { return !el.closest('[hidden]') && !el.closest('[aria-hidden="true"]'); }) : [t];
+      at = set.indexOf(t);
+      // A repeated copy on the drifting wall opens as its original photo
+      if (at < 0) at = set.map(function (el) { return el.getAttribute('data-zoom'); }).indexOf(t.getAttribute('data-zoom'));
+      at = Math.max(0, at);
+      if (!set.length) set = [t];
       box = document.createElement('div');
       box.className = 'lightbox';
       box.setAttribute('role', 'dialog');
@@ -315,11 +320,186 @@
     });
   }
 
+  // Around the world: photos drift edge to edge. Hover to stop them, drag or swipe
+  // to push them, tap one to see it larger.
+  function drift() {
+    // Visitors who ask for less motion get a slower drift; everyone gets the pause button
+    var pace = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.5 : 1;
+
+    document.querySelectorAll('[data-drift]').forEach(function (box) {
+      var toggle = box.querySelector('.drift-toggle');
+      var paused = false, hovering = false, started = false, raf = 0, last = 0;
+
+      var rows = [].map.call(box.querySelectorAll('.drift-row'), function (el) {
+        var track = el.querySelector('.drift-track');
+        return {
+          el: el, track: track, items: [].slice.call(track.children),
+          speed: +el.getAttribute('data-speed') || 30, dir: -1, x: 0, v: 0, w: 0,
+          press: null, dragging: false, justDragged: false
+        };
+      });
+
+      // Repeat the photos so there is always another set waiting off-screen
+      function fill(r) {
+        var copies = Math.round(r.track.children.length / r.items.length);
+        r.w = r.track.getBoundingClientRect().width / copies;
+        if (!r.w) return;
+        var need = Math.ceil(r.el.clientWidth / r.w) + 1;
+        for (; copies < need; copies++) {
+          r.items.forEach(function (item) {
+            var c = item.cloneNode(true), img = c.querySelector('img');
+            c.setAttribute('aria-hidden', 'true');
+            img.alt = '';
+            img.loading = 'eager';
+            r.track.appendChild(c);
+          });
+        }
+      }
+
+      function place(r) {
+        if (r.w) r.x = ((r.x % r.w) + r.w) % r.w - r.w;
+        r.track.style.transform = 'translate3d(' + r.x.toFixed(2) + 'px,0,0)';
+      }
+
+      function frame(now) {
+        var dt = Math.max(0, Math.min((now - last) / 1000, 0.05));
+        last = now;
+        rows.forEach(function (r) {
+          if (r.dragging) return;
+          var cruise = paused || hovering ? 0 : r.speed * pace * r.dir;
+          // Ease towards the cruising speed, so starts and pushes glide. Hovering settles
+          // quickly, but a row that has just been pushed still gets to glide first.
+          var ease = hovering && Math.abs(r.v) < 80 ? 7 : 1.5;
+          r.v += (cruise - r.v) * (1 - Math.exp(-dt * ease));
+          r.x += r.v * dt;
+          place(r);
+        });
+        raf = requestAnimationFrame(frame);
+      }
+
+      function run(on) {
+        if (on && !raf) { last = performance.now(); raf = requestAnimationFrame(frame); }
+        if (!on && raf) { cancelAnimationFrame(raf); raf = 0; }
+      }
+
+      function show() {
+        if (!toggle) return;
+        toggle.setAttribute('aria-pressed', paused ? 'true' : 'false');
+        toggle.setAttribute('aria-label', paused ? 'Play photos' : 'Pause photos');
+      }
+
+      rows.forEach(function (r) {
+        r.el.addEventListener('pointerdown', function (e) {
+          if (e.button) return;
+          r.press = { id: e.pointerId, startX: e.clientX, lastX: e.clientX, lastT: e.timeStamp, vel: 0, moved: false };
+        });
+        r.el.addEventListener('pointermove', function (e) {
+          var p = r.press;
+          if (!p || e.pointerId !== p.id) return;
+          if (!p.moved) {
+            if (Math.abs(e.clientX - p.startX) < 6) return;
+            p.moved = true;
+            r.dragging = true;
+            r.el.setPointerCapture(e.pointerId);
+            r.el.classList.add('is-dragging');
+          }
+          var step = e.clientX - p.lastX, ms = Math.max(e.timeStamp - p.lastT, 1);
+          r.x += step;
+          place(r);
+          p.vel = 0.7 * (step / ms * 1000) + 0.3 * p.vel;
+          p.lastX = e.clientX;
+          p.lastT = e.timeStamp;
+        });
+        function release(e) {
+          var p = r.press;
+          if (!p || e.pointerId !== p.id) return;
+          r.press = null;
+          if (!p.moved) return;
+          r.dragging = false;
+          r.el.classList.remove('is-dragging');
+          // Let go while moving and the row glides on, then keeps drifting that way
+          r.v = e.timeStamp - p.lastT > 100 ? 0 : Math.max(-2600, Math.min(2600, p.vel));
+          if (Math.abs(r.v) > 60) r.dir = r.v > 0 ? 1 : -1;
+          r.justDragged = true;
+          setTimeout(function () { r.justDragged = false; }, 60);
+        }
+        r.el.addEventListener('pointerup', release);
+        r.el.addEventListener('pointercancel', release);
+        // A drag shouldn't count as tapping a photo
+        r.el.addEventListener('click', function (e) {
+          if (r.justDragged) { e.stopPropagation(); e.preventDefault(); }
+        }, true);
+        r.el.addEventListener('dragstart', function (e) { e.preventDefault(); });
+      });
+
+      box.addEventListener('pointerenter', function (e) { if (e.pointerType === 'mouse') hovering = true; });
+      box.addEventListener('pointerleave', function () { hovering = false; });
+      box.addEventListener('keydown', function (e) {
+        var push = e.key === 'ArrowRight' ? -900 : e.key === 'ArrowLeft' ? 900 : 0;
+        if (!push || e.target !== box) return;
+        e.preventDefault();
+        rows.forEach(function (r) { r.v += push; });
+      });
+      if (toggle) toggle.addEventListener('click', function () { paused = !paused; show(); });
+      window.addEventListener('resize', function () { if (started) rows.forEach(fill); }, { passive: true });
+
+      // Only move while on screen, and load the photos just before they're needed
+      function nearScreen(on) {
+        if (on && !started) {
+          started = true;
+          box.querySelectorAll('img').forEach(function (img) { img.loading = 'eager'; });
+          rows.forEach(fill);
+        }
+        run(on);
+      }
+      box.classList.add('is-live');
+      show();
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (seen) {
+          nearScreen(seen[seen.length - 1].isIntersecting);
+        }, { rootMargin: '400px 0px' }).observe(box);
+      } else {
+        nearScreen(true);
+      }
+    });
+  }
+
+  function ageGate() {
+    var ok = false;
+    try { ok = localStorage.getItem('deuce-21') === 'yes'; } catch (e) {}
+    if (ok) return;
+    var gate = document.createElement('div');
+    gate.className = 'age-gate';
+    gate.setAttribute('role', 'dialog');
+    gate.setAttribute('aria-modal', 'true');
+    gate.setAttribute('aria-labelledby', 'age-title');
+    gate.innerHTML = '<div class="age-card"><img src="images/logo.webp" alt="Deuce Cellars" class="age-logo">' +
+      '<h2 id="age-title">Welcome</h2><p class="age-copy">Please confirm you are 21 or older to enter.</p>' +
+      '<div class="age-actions"><button class="btn" data-age="yes">I am 21 or older</button>' +
+      '<button class="btn btn-ghost" data-age="no">I am under 21</button></div></div>';
+    document.body.appendChild(gate);
+    document.body.classList.add('no-scroll');
+    gate.querySelector('[data-age="yes"]').focus();
+    gate.addEventListener('click', function (e) {
+      var b = e.target.closest('[data-age]');
+      if (!b) return;
+      if (b.getAttribute('data-age') === 'yes') {
+        try { localStorage.setItem('deuce-21', 'yes'); } catch (err) {}
+        gate.remove();
+        document.body.classList.remove('no-scroll');
+      } else {
+        gate.querySelector('.age-copy').textContent = 'Sorry — you must be of legal drinking age to visit this site.';
+        gate.querySelector('.age-actions').remove();
+      }
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     renderWines();
     nav();
     heroVideo();
     lightbox();
+    drift();
     ageGate();
     // The wine cards are added after the page loads, so re-do any #section jump once they're in
     var target = location.hash && document.getElementById(location.hash.slice(1));
