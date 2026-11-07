@@ -29,7 +29,7 @@
 */
 window.DEUCE = {
   purchaseMode: 'reserve',
-  email: 'deucecellars@gmail.com',
+  email: 'hello@deucecellars.com',
   phone: '(503) 201-8868',
 
   wines: [
@@ -125,6 +125,14 @@ window.DEUCE = {
       note: 'A tiny harvest — only 96 cases. Boysenberry, white chocolate and cigar box. Beautiful fruit, an elegant wine.'
     },
     {
+      year: 2021,
+      status: 'coming',
+      price: null,
+      image: 'images/bottles/bottle-2021.webp',
+      region: 'Walla Walla Valley',
+      note: 'Bottled and resting in our cellar. Tasting notes to come.'
+    },
+    {
       year: 2022,
       status: 'coming',
       price: null,
@@ -134,6 +142,14 @@ window.DEUCE = {
       oak: 'Three years in Missouri oak',
       alcohol: '14.8%',
       note: 'Black cherry, licorice, cigar box and honeysuckle. Bold and expressive, yet remarkably elegant.'
+    },
+    {
+      year: 2023,
+      status: 'coming',
+      price: null,
+      image: 'images/bottles/bottle-2023.webp',
+      region: 'Walla Walla Valley',
+      note: 'Bottled and resting in our cellar. Tasting notes to come.'
     }
   ],
 

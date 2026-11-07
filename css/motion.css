@@ -1,0 +1,337 @@
+/* Deuce Cellars — movement layer.
+   Animation rules sit under html.m, which the head script sets only when the visitor
+   hasn't asked their device for reduced motion. Without it the site looks as before.
+   The vintage scrubber and stat bars work in both modes. */
+
+:root { --ease-out: cubic-bezier(.2, .7, .2, 1); --ease-lux: cubic-bezier(.16, .84, .24, 1); }
+
+/* ---- Reading progress along the bottom of the header ---------------------- */
+.scroll-line {
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; pointer-events: none;
+  background: linear-gradient(90deg, var(--wine-deep), var(--wine) 60%, #b4485a);
+  transform-origin: 0 50%; transform: scaleX(var(--sp, 0));
+}
+
+/* ---- Page arrival: the glass drains away ---------------------------------- */
+html.pour-in::after, html.pour-in::before {
+  content: ''; position: fixed; left: 0; right: 0; z-index: 98; pointer-events: none;
+  animation: pour-drain .95s var(--ease-lux) .08s both;
+}
+html.pour-in::after { top: 0; height: 100vh; height: 100lvh; background: var(--wine-deep); }
+html.pour-in::before { top: -34px; height: 35px; background: var(--wave) 0 100% / 240px 35px repeat-x; animation-name: pour-drain, wave-roll; animation-duration: .95s, 1.6s; animation-timing-function: var(--ease-lux), linear; animation-iteration-count: 1, infinite; }
+@keyframes pour-drain { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, calc(100lvh + 40px), 0); } }
+@keyframes wave-roll { to { background-position-x: 240px; } }
+:root { --wave: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 35' preserveAspectRatio='none'%3E%3Cpath d='M0 20 C 40 6 80 6 120 20 S 200 34 240 20 V35 H0Z' fill='%234b121a'/%3E%3C/svg%3E"); }
+
+/* Leaving: the glass fills from the bottom */
+.pour {
+  position: fixed; left: 0; right: 0; top: 0; height: 100vh; height: 100lvh; z-index: 98; pointer-events: none;
+  background: var(--wine-deep); transform: translate3d(0, calc(100lvh + 40px), 0);
+  transition: transform .55s cubic-bezier(.6, 0, .3, 1);
+}
+.pour::before {
+  content: ''; position: absolute; left: 0; right: 0; top: -34px; height: 35px;
+  background: var(--wave) 0 100% / 240px 35px repeat-x; animation: wave-roll 1.2s linear infinite;
+}
+.pour.go { transform: none; }
+
+/* ---- Headlines rise word by word ------------------------------------------ */
+.m .hero .display:not(.words), .m .page-hero .display:not(.words) { opacity: 0; }
+.display .w { display: inline-block; overflow: hidden; vertical-align: top; white-space: nowrap; padding-bottom: .14em; margin-bottom: -.14em; }
+.display em .w { padding-right: .1em; margin-right: -.1em; }
+.display .w > span { display: inline-block; }
+.m .display.words .w > span {
+  transform: translateY(112%) rotate(4deg); transform-origin: 0 100%;
+  animation: word-up 1.15s var(--ease-lux) forwards; animation-delay: calc(.25s + var(--wi, 0) * 75ms);
+}
+@keyframes word-up { to { transform: none; } }
+/* Once every word is up, the headline goes back to plain text layout */
+.display.words.words-done .w { overflow: visible; }
+.m .display.words.words-done .w > span { animation: none; transform: none; }
+
+/* Everything else in the opening frame fades up after the headline */
+@keyframes fade-up { from { opacity: 0; transform: translate3d(0, 26px, 0); } to { opacity: 1; transform: none; } }
+.m .hero-content > :not(.display), .m .page-hero .wrap > :not(.display) { animation: fade-up 1s var(--ease-out) both; }
+.m .hero-content > .eyebrow, .m .page-hero .wrap > .eyebrow { animation-delay: .1s; }
+.m .hero-content > .lede { animation-delay: .75s; }
+.m .hero-content > .actions { animation-delay: .95s; }
+.m .page-hero .wrap > .lede { animation-delay: .65s; }
+.m .hero > video, .m .page-hero > img { animation: settle 2.4s var(--ease-lux) both; }
+@keyframes settle { from { scale: 1.12; } to { scale: 1; } }
+.m .video-toggle { animation: fade-up 1s var(--ease-out) 1.3s both; }
+/* While the age check is up, the opening frame waits */
+.gate-up .hero-content > *, .gate-up .page-hero .wrap > *, .gate-up .display .w > span,
+.gate-up .hero > video, .gate-up .page-hero > img { animation-play-state: paused !important; }
+
+/* Hero layers move at different speeds as you scroll (values set by motion.js) */
+.m .hero > video, .m .page-hero > img { transform: translate3d(0, var(--hy, 0px), 0); will-change: transform; }
+.m .hero-content, .m .page-hero .wrap { transform: translate3d(0, var(--cy, 0px), 0); opacity: var(--co, 1); }
+
+/* ---- Scroll reveals ------------------------------------------------------- */
+.m .rv {
+  opacity: 0; transform: translate3d(0, 34px, 0);
+  transition: opacity 1s var(--ease-out), transform 1.2s var(--ease-lux);
+  transition-delay: var(--rd, 0ms);
+}
+.m .rv.in { opacity: 1; transform: none; }
+/* Pictures open like a curtain instead. The figure is what's watched: a fully clipped
+   element doesn't count as on screen, so the clip sits on the frame inside it. */
+.m .split-media.rv { opacity: 1; transform: none; }
+.m .split-media.rv .pm { clip-path: inset(0 0 100% 0); transition: clip-path 1.4s var(--ease-lux); transition-delay: var(--rd, 0ms); }
+.m .split-media.rv.in .pm { clip-path: inset(0 0 0 0); }
+.m .split-media.rv .pm img { scale: 1.25; transition: scale 1.8s var(--ease-lux); transition-delay: var(--rd, 0ms); }
+.m .split-media.rv.in .pm img { scale: 1; }
+
+/* Picture frames used for parallax and hover zoom */
+.pm { display: block; overflow: hidden; position: relative; }
+.m .split-media .pm img { transform: translate3d(0, var(--py, 0px), 0) scale(1.14); will-change: transform; }
+
+/* Drifting photo walls: the photo under the pointer leans in */
+.drift [data-zoom] { cursor: zoom-in; }
+.drift-row.is-dragging [data-zoom] { cursor: grabbing; }
+.drift img { transition: transform 1.2s var(--ease-lux), filter .6s; }
+@media (hover: hover) and (pointer: fine) {
+  .drift figure { overflow: hidden; }
+  .m .drift figure:hover img { transform: scale(1.04); }
+  .m .drift-row.is-dragging figure:hover img { transform: none; }
+}
+
+/* The framed corks settle onto the wall beside the mailing list */
+.m .signup--cork .cork.rv { opacity: 0; transform: translate3d(0, 30px, 0) rotate(-3deg) scale(.94); transition: opacity 1s var(--ease-out), transform 1.6s var(--ease-lux); }
+.m .signup--cork .cork.rv.in { opacity: 1; transform: none; }
+@media (hover: hover) {
+  .signup--cork .cork img { transition: transform 1s var(--ease-lux), box-shadow 1s var(--ease-lux); }
+  .m .signup--cork .cork:hover img { transform: rotate(-1.2deg) scale(1.02); box-shadow: 0 24px 50px -24px rgba(20, 13, 11, .45); }
+}
+
+/* Vertical lineups: the bottles step up into place one by one */
+.m .vt-bottle { opacity: 0; transform: translate3d(0, 40px, 0); transition: opacity .8s var(--ease-out), transform 1s var(--ease-lux); }
+.m .vertical-card.seen .vt-bottle { opacity: 1; transform: none; }
+.m .vertical-card.seen .vt-bottle:nth-child(2) { transition-delay: .08s; }
+.m .vertical-card.seen .vt-bottle:nth-child(3) { transition-delay: .16s; }
+.m .vertical-card.seen .vt-bottle:nth-child(4) { transition-delay: .24s; }
+.m .vertical-card.seen .vt-bottle:nth-child(5) { transition-delay: .32s; }
+.m .vertical-card.seen .vt-bottle:nth-child(6) { transition-delay: .4s; }
+@media (hover: hover) {
+  .m .vertical-card:hover .vt-bottle { transform: translate3d(0, -6px, 0); transition-delay: 0s; }
+  .m .vertical-card:hover .vt-bottle:nth-child(even) { transform: translate3d(0, -10px, 0); }
+}
+
+/* ---- Bottles that tilt toward you ----------------------------------------- */
+.release-stage { perspective: 900px; }
+.m .release-stage .bottle {
+  transform: rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg));
+  transition: transform .6s var(--ease-out); animation: bob 7s ease-in-out infinite;
+}
+@keyframes bob { 0%, 100% { translate: 0 0; } 50% { translate: 0 -8px; } }
+.m .release-stage > img.bg { transform: translate3d(var(--bx, 0px), var(--by, 0px), 0) scale(1.06); transition: transform .8s var(--ease-out); }
+.glare {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .5s;
+  background: radial-gradient(42% 32% at var(--gx, 50%) var(--gy, 30%), rgba(255, 238, 205, .2), rgba(255, 238, 205, 0) 70%);
+  mix-blend-mode: screen;
+}
+.release-stage:hover .glare { opacity: 1; }
+.m .tile--bottle { perspective: 700px; }
+.m .tile--bottle > img, .m .wine-card:hover .tile--bottle > img {
+  transform: translateY(var(--ty, 0px)) rotateY(var(--ry, 0deg)) rotateX(var(--rx, 0deg));
+  transition: transform .5s var(--ease-out);
+}
+.m .wine-card:hover .tile--bottle > img { --ty: -6px; }
+
+/* ---- Buttons: a pour of colour on hover ----------------------------------- */
+.m .btn { position: relative; overflow: hidden; isolation: isolate; transition: color .35s, border-color .35s, background-color .35s, translate .45s var(--ease-out); }
+.m .btn::after {
+  content: ''; position: absolute; inset: -2px; z-index: -1; background: var(--wine-deep);
+  transform: translate3d(0, 104%, 0); border-radius: 50% 50% 0 0 / 16px 16px 0 0;
+  transition: transform .55s var(--ease-lux), border-radius .55s var(--ease-lux);
+}
+@media (hover: hover) {
+  .m .btn:hover { background: var(--wine); }
+  .m .btn:hover::after { transform: none; border-radius: 0; }
+  .m .btn-ghost:hover { background: transparent; }
+  .m .btn-light:hover { background: var(--paper); border-color: var(--wine); color: var(--paper); }
+}
+.m .btn-ghost::after { background: var(--ink); }
+.m .btn-light::after { background: var(--wine); }
+
+/* Arrow links: the underline runs out and back in */
+@media (hover: hover) {
+  .m .link-arrow { border-bottom-color: transparent; background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat; }
+  .m .link-arrow:hover { animation: line-run .7s var(--ease-lux); }
+}
+@keyframes line-run {
+  0% { background-size: 100% 1px; background-position: 100% 100%; }
+  45% { background-size: 0 1px; background-position: 100% 100%; }
+  46% { background-size: 0 1px; background-position: 0 100%; }
+  100% { background-size: 100% 1px; background-position: 0 100%; }
+}
+
+/* ---- Numbers and bars ----------------------------------------------------- */
+.stat-bar { display: block; height: 3px; margin-top: 16px; max-width: 240px; background: rgba(246, 242, 234, .12); overflow: hidden; }
+.stat-bar i { display: block; height: 100%; background: #e9d9ac; transform-origin: 0 50%; transform: scaleX(var(--v, 1)); }
+.stat:last-child .stat-bar i { background: rgba(246, 242, 234, .38); }
+.section:not(.section--night) .stat-bar { background: var(--line); }
+.section:not(.section--night) .stat-bar i { background: var(--wine); }
+.section:not(.section--night) .stat:last-child .stat-bar i { background: var(--paper-3); }
+.m .stat-bar i { transform: scaleX(0); transition: transform 2s var(--ease-lux) .25s; }
+.m .seen .stat-bar i { transform: scaleX(var(--v, 1)); }
+.count { font-variant-numeric: tabular-nums; }
+
+/* Big word band: the word drifts sideways as you pass */
+.m .bigword .word { transform: translate3d(var(--wx, 0px), 0, 0); will-change: transform; }
+.m .bigword > img { transform: translate3d(0, var(--py, 0px), 0) scale(1.15); }
+
+/* Award numbers glow in */
+.m .awards .award b { transition: text-shadow 1.6s var(--ease-out) .4s; }
+.m .awards .award.seen b { text-shadow: 0 0 28px rgba(233, 217, 172, .28); }
+
+/* ---- Story timeline: a line of wine runs down the years -------------------- */
+.timeline.is-live { position: relative; border-top: 0; }
+.timeline.is-live::before, .timeline.is-live::after {
+  content: ''; position: absolute; left: 7px; top: var(--lt, 41px); height: var(--lh, calc(100% - 82px)); width: 2px; background: var(--line);
+}
+.timeline.is-live::after { background: var(--wine); transform-origin: 50% 0; transform: scaleY(var(--tp, 0)); }
+.timeline.is-live li { position: relative; padding-left: 40px; border-bottom: 1px solid var(--line); }
+.timeline.is-live li:first-child { border-top: 1px solid var(--line); }
+.timeline.is-live li::before {
+  content: ''; position: absolute; left: 1px; top: 34px; width: 14px; height: 14px; border-radius: 50%; z-index: 1;
+  background: var(--paper); border: 2px solid var(--paper-3); transition: background .5s, border-color .5s, transform .5s var(--ease-out);
+}
+.timeline.is-live b { color: var(--ink-3); transition: color .6s; }
+.timeline.is-live li.on::before { background: var(--wine); border-color: var(--wine); transform: scale(1.15); }
+.timeline.is-live li.on b { color: var(--wine); }
+.timeline.is-live li.now::before { box-shadow: 0 0 0 6px rgba(122, 31, 43, .14); }
+
+/* ---- Lightbox ------------------------------------------------------------- */
+.m .lightbox { animation: lb-in .35s var(--ease-out) both; }
+.m .lightbox figure { animation: lb-fig .55s var(--ease-lux) both; }
+@keyframes lb-in { from { opacity: 0; } }
+@keyframes lb-fig { from { opacity: 0; transform: scale(.94) translate3d(0, 16px, 0); } }
+.lightbox img { transition: opacity .25s; }
+.lightbox img.is-swap { opacity: 0; }
+.lightbox-nav {
+  position: absolute; top: 50%; width: 52px; height: 52px; margin-top: -26px; border: 1px solid rgba(246, 242, 234, .4);
+  background: rgba(20, 13, 11, .4); color: var(--paper); font: 300 26px/1 var(--sans); cursor: pointer;
+}
+.lightbox-nav:hover { background: var(--paper); color: var(--ink); }
+.lightbox-prev { left: 16px; }
+.lightbox-next { right: 16px; }
+.lightbox-count { display: block; margin-top: 6px; font: 500 12px/1 var(--cond); letter-spacing: .2em; color: rgba(246, 242, 234, .5); }
+@media (max-width: 700px) {
+  .lightbox-nav { top: auto; bottom: 16px; margin: 0; width: 46px; height: 46px; }
+}
+
+/* ---- Age check ------------------------------------------------------------ */
+.m .age-gate { animation: lb-in .5s var(--ease-out) both; }
+.m .age-card { animation: fade-up .9s var(--ease-lux) .1s both; }
+.m .age-card > * { animation: fade-up .9s var(--ease-out) both; }
+.m .age-card > :nth-child(1) { animation-delay: .2s; }
+.m .age-card > :nth-child(2) { animation-delay: .32s; }
+.m .age-card > :nth-child(3) { animation-delay: .42s; }
+.m .age-card > :nth-child(4) { animation-delay: .52s; }
+.age-gate.is-leaving { opacity: 0; transition: opacity .45s; }
+.age-gate.is-leaving .age-card { transform: translate3d(0, -16px, 0) scale(.98); transition: transform .45s var(--ease-out); }
+
+/* ---- Phone menu: links slide in one after another ------------------------- */
+@media (max-width: 900px) {
+  .m .nav-open .site-nav a { animation: fade-up .5s var(--ease-out) both; }
+  .m .nav-open .site-nav a:nth-child(2) { animation-delay: .04s; }
+  .m .nav-open .site-nav a:nth-child(3) { animation-delay: .08s; }
+  .m .nav-open .site-nav a:nth-child(4) { animation-delay: .12s; }
+  .m .nav-open .site-nav a:nth-child(5) { animation-delay: .16s; }
+  .m .nav-open .site-nav a:nth-child(6) { animation-delay: .2s; }
+}
+
+/* ---- Map dots drop in the first time the map draws ------------------------ */
+.m .map-intro .dot { transform-box: fill-box; transform-origin: 50% 50%; animation: dot-in .6s var(--ease-out) both; }
+.m .map-intro .dot:nth-child(4n+2) { animation-delay: .08s; }
+.m .map-intro .dot:nth-child(4n+3) { animation-delay: .16s; }
+.m .map-intro .dot:nth-child(4n) { animation-delay: .24s; }
+@keyframes dot-in { from { opacity: 0; transform: scale(0); } 70% { transform: scale(1.4); } }
+.m .dot.is-on { animation: dot-ping 1.8s ease-out infinite; transform-box: fill-box; transform-origin: 50% 50%; }
+@keyframes dot-ping { 0% { stroke-width: 2; } 50% { stroke-width: 6; stroke-opacity: .35; } 100% { stroke-width: 2; } }
+
+/* ---- Cursor ring (desktop only) ------------------------------------------- */
+.cursor {
+  position: fixed; left: 0; top: 0; z-index: 120; pointer-events: none; width: 36px; height: 36px; margin: -18px 0 0 -18px;
+  border-radius: 50%; border: 1px solid rgba(122, 31, 43, .55); opacity: 0;
+  display: grid; place-items: center; transition: width .35s var(--ease-out), height .35s var(--ease-out), margin .35s var(--ease-out),
+    background-color .35s, border-color .35s, opacity .3s;
+}
+.cursor.is-on { opacity: 1; }
+.cursor.is-link { width: 56px; height: 56px; margin: -28px 0 0 -28px; background: rgba(122, 31, 43, .08); }
+.cursor.is-label { width: 78px; height: 78px; margin: -39px 0 0 -39px; background: var(--wine); border-color: var(--wine); }
+.cursor span { font: 600 11px/1 var(--cond); letter-spacing: .18em; text-transform: uppercase; color: var(--paper); opacity: 0; transition: opacity .25s; }
+.cursor.is-label span { opacity: 1; }
+.cursor.is-dark { border-color: rgba(233, 217, 172, .6); }
+.cursor.is-dark.is-link { background: rgba(233, 217, 172, .1); }
+
+/* ---- Vintage scrubber (Wines page) ---------------------------------------- */
+.scrub-section { overflow: hidden; }
+.section--night .section-head p { color: rgba(246, 242, 234, .72); }
+.scrub:empty { display: none; }
+.scrub { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 80px); align-items: center; }
+.scrub-stage {
+  position: relative; aspect-ratio: 1 / 1; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 4%;
+  background: radial-gradient(60% 55% at 50% 45%, #3c2420 0%, rgba(26, 19, 17, 0) 72%);
+}
+.scrub-year {
+  position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; overflow: hidden;
+  font: 300 clamp(110px, 21vw, 300px)/1 var(--serif); letter-spacing: -.04em; color: rgba(233, 217, 172, .1);
+  font-variant-numeric: lining-nums;
+}
+.scrub-year span { display: block; transition: transform .6s var(--ease-lux), opacity .4s; }
+.scrub-year span.is-out { transform: translate3d(0, var(--dir, -40%), 0); opacity: 0; }
+.scrub-year span.is-pre { transform: translate3d(0, calc(var(--dir, -40%) * -1), 0); opacity: 0; transition: none; }
+.scrub-bottles { position: relative; height: 92%; aspect-ratio: 268 / 973; }
+.scrub-bottles img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain;
+  filter: drop-shadow(0 24px 26px rgba(0, 0, 0, .6)); transition: opacity .45s, transform .7s var(--ease-lux);
+}
+.scrub-bottles img.is-out { opacity: 0; transform: translate3d(var(--bdx, -30px), 0, 0) rotate(var(--bdr, -3deg)); }
+.scrub-bottles img.is-pre { opacity: 0; transform: translate3d(calc(var(--bdx, -30px) * -1), 0, 0) rotate(calc(var(--bdr, -3deg) * -1)); transition: none; }
+.scrub-info { min-height: 380px; display: flex; flex-direction: column; }
+.scrub-status { display: inline-block; align-self: flex-start; font: 600 12px/1 var(--cond); letter-spacing: .18em; text-transform: uppercase; padding: 7px 10px 6px; border: 1px solid rgba(233, 217, 172, .4); color: #e9d9ac; }
+.scrub-status--current { background: var(--wine); border-color: var(--wine); color: var(--paper); }
+.scrub-name { font: 600 clamp(28px, 3.2vw, 42px)/1.05 var(--cond); text-transform: uppercase; letter-spacing: .02em; margin-top: 18px; }
+.scrub-meta { margin: 8px 0 0; font: 500 13px/1.4 var(--cond); letter-spacing: .14em; text-transform: uppercase; color: rgba(246, 242, 234, .6); }
+.scrub-award { margin: 14px 0 0; font: 500 italic 19px/1.3 var(--serif); color: #e9d9ac; }
+.scrub-note { margin: 16px 0 0; color: rgba(246, 242, 234, .78); max-width: 52ch; }
+.scrub-foot { display: flex; align-items: center; gap: 24px; margin-top: auto; padding-top: 24px; }
+.scrub-foot .price { color: var(--paper); }
+.scrub-foot .link-arrow { color: var(--paper); }
+.scrub-foot .price--soon { color: rgba(246, 242, 234, .6); }
+.scrub-text { transition: opacity .3s, transform .45s var(--ease-out); }
+.scrub-text.is-swap { opacity: 0; transform: translate3d(0, 8px, 0); }
+.scrub-rail { grid-column: 1 / -1; position: relative; padding-top: 8px; }
+.scrub-range {
+  -webkit-appearance: none; appearance: none; display: block; width: 100%; height: 44px; margin: 0; background: transparent; cursor: pointer;
+  --fill: 50%;
+}
+.scrub-range:focus-visible { outline: 2px solid #e9d9ac; outline-offset: 4px; }
+.scrub-range::-webkit-slider-runnable-track { height: 2px; background: linear-gradient(90deg, #e9d9ac var(--fill), rgba(246, 242, 234, .2) var(--fill)); }
+.scrub-range::-moz-range-track { height: 2px; background: rgba(246, 242, 234, .2); }
+.scrub-range::-moz-range-progress { height: 2px; background: #e9d9ac; }
+.scrub-range::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 26px; height: 26px; margin-top: -12px; border-radius: 50%;
+  background: var(--wine); border: 2px solid #e9d9ac; box-shadow: 0 0 0 6px rgba(122, 31, 43, .3); transition: box-shadow .3s;
+}
+.scrub-range::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--wine); border: 2px solid #e9d9ac; box-shadow: 0 0 0 6px rgba(122, 31, 43, .3); }
+.scrub-range:active::-webkit-slider-thumb { box-shadow: 0 0 0 12px rgba(122, 31, 43, .35); }
+.scrub-ticks { display: flex; justify-content: space-between; margin: 4px 13px 0; }
+.scrub-ticks button {
+  flex: 0 0 0; display: flex; justify-content: center; border: 0; background: none; padding: 6px 0; cursor: pointer; color: rgba(246, 242, 234, .45);
+  font: 600 13px/1 var(--cond); letter-spacing: .1em; transition: color .3s;
+}
+.scrub-ticks button span { white-space: nowrap; }
+.scrub-ticks button:hover, .scrub-ticks button.is-on { color: #e9d9ac; }
+.scrub-hint { margin: 18px 0 0; text-align: center; font: 500 12px/1 var(--cond); letter-spacing: .2em; text-transform: uppercase; color: rgba(246, 242, 234, .4); }
+@media (max-width: 900px) {
+  .scrub { grid-template-columns: 1fr; }
+  .scrub-stage { aspect-ratio: 5 / 4; }
+  .scrub-info { min-height: 0; }
+  .scrub-ticks button { font-size: 11px; letter-spacing: 0; }
+  .scrub-ticks button:nth-child(even) span { visibility: hidden; }
+  .scrub-ticks button.is-on span { visibility: visible; }
+}
+

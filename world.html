@@ -8,7 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/motion.css?v=6">
+<script>/* Turns on the site's movement unless the device asks for reduced motion */(function(d){var c=d.documentElement.classList;try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}c.add('m');try{if(sessionStorage.getItem('deuce-pour')){sessionStorage.removeItem('deuce-pour');c.add('pour-in')}}catch(e){}try{if(localStorage.getItem('deuce-21')!=='yes')c.add('gate-up')}catch(e){c.add('gate-up')}setTimeout(function(){if(!c.contains('m-ok'))c.remove('m','pour-in','gate-up')},4000)})(document)</script>
 </head>
 <body>
 
@@ -40,27 +42,34 @@
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="gallery">
-        <figure><img src="images/world/french-alps.webp" alt="Deuce Cellars bottle in the French Alps" loading="lazy"><figcaption>French Alps</figcaption></figure>
-        <figure><img src="images/world/south-korea.webp" alt="Deuce Cellars bottle with a South Korean flag" loading="lazy"><figcaption>South Korea</figcaption></figure>
-        <figure><img src="images/world/bruges.webp" alt="Deuce Cellars bottle on a canal in Bruges" loading="lazy"><figcaption>Bruges, Belgium</figcaption></figure>
-        <figure><img src="images/world/lake-lucerne.webp" alt="Deuce Cellars bottle above Lake Lucerne" loading="lazy"><figcaption>Lake Lucerne, Switzerland</figcaption></figure>
-        <figure><img src="images/world/amsterdam.webp" alt="Deuce Cellars bottle on a canal bridge in Amsterdam" loading="lazy"><figcaption>Amsterdam</figcaption></figure>
-        <figure><img src="images/world/kerid-crater.webp" alt="Deuce Cellars bottle at Kerið Crater" loading="lazy"><figcaption>Kerið Crater, Iceland</figcaption></figure>
-        <figure><img src="images/world/chateau-de-chillon.webp" alt="Deuce Cellars bottle at Château de Chillon" loading="lazy"><figcaption>Château de Chillon, Lake Geneva</figcaption></figure>
-        <figure><img src="images/world/vail.webp" alt="Deuce Cellars bottle in Vail" loading="lazy"><figcaption>Vail, Colorado</figcaption></figure>
-        <figure><img src="images/world/gullfoss.webp" alt="Deuce Cellars bottle at Gullfoss" loading="lazy"><figcaption>Gullfoss Falls, Iceland</figcaption></figure>
-        <figure><img src="images/world/holland.webp" alt="Deuce Cellars bottle in Dam Square, Amsterdam" loading="lazy"><figcaption>Dam Square, Amsterdam</figcaption></figure>
-        <figure><img src="images/world/oppdal.webp" alt="Deuce Cellars bottle raised at a gondola station in Oppdal" loading="lazy"><figcaption>Oppdal, Norway</figcaption></figure>
-        <figure><img src="images/world/lake-geneva.webp" alt="Deuce Cellars bottle over Lake Geneva" loading="lazy"><figcaption>Lake Geneva, Swiss Alps</figcaption></figure>
-        <figure><img src="images/world/swiss-alps.webp" alt="Deuce Cellars bottle in the Swiss Alps" loading="lazy"><figcaption>Swiss Alps</figcaption></figure>
-        <figure><img src="images/world/montreux.webp" alt="Deuce Cellars bottle at the Freddie Mercury statue" loading="lazy"><figcaption>With Freddie Mercury, Montreux</figcaption></figure>
-        <figure><img src="images/world/thingvellir.webp" alt="Deuce Cellars bottle at Þingvellir National Park" loading="lazy"><figcaption>Þingvellir National Park, Iceland</figcaption></figure>
-        <figure><img src="images/world/times-square.webp" alt="Deuce Cellars bottle in Times Square" loading="lazy"><figcaption>Times Square, New York</figcaption></figure>
-        <figure><img src="images/world/iceland.webp" alt="Deuce Cellars bottle in Iceland" loading="lazy"><figcaption>Iceland</figcaption></figure>
+  <section class="drift-section">
+    <div class="drift drift--wall" data-drift role="region" tabindex="0" aria-label="Photos of Deuce around the world. Left and right arrow keys move them.">
+      <div class="drift-row" data-speed="26">
+        <div class="drift-track">
+          <figure data-zoom="images/world/french-alps.webp" data-caption="French Alps"><img src="images/world/french-alps.webp" alt="Deuce Cellars bottle in the French Alps" width="750" height="618" loading="lazy"><figcaption>French Alps</figcaption></figure>
+          <figure data-zoom="images/world/south-korea.webp" data-caption="South Korea"><img src="images/world/south-korea.webp" alt="Deuce Cellars bottle with a South Korean flag" width="900" height="1201" loading="lazy"><figcaption>South Korea</figcaption></figure>
+          <figure data-zoom="images/world/bruges.webp" data-caption="Bruges, Belgium"><img src="images/world/bruges.webp" alt="Deuce Cellars bottle on a canal in Bruges" width="750" height="520" loading="lazy"><figcaption>Bruges, Belgium</figcaption></figure>
+          <figure data-zoom="images/world/lake-lucerne.webp" data-caption="Lake Lucerne, Switzerland"><img src="images/world/lake-lucerne.webp" alt="Deuce Cellars bottle above Lake Lucerne" width="640" height="586" loading="lazy"><figcaption>Lake Lucerne, Switzerland</figcaption></figure>
+          <figure data-zoom="images/world/amsterdam.webp" data-caption="Amsterdam"><img src="images/world/amsterdam.webp" alt="Deuce Cellars bottle on a canal bridge in Amsterdam" width="641" height="960" loading="lazy"><figcaption>Amsterdam</figcaption></figure>
+          <figure data-zoom="images/world/kerid-crater.webp" data-caption="Kerið Crater, Iceland"><img src="images/world/kerid-crater.webp" alt="Deuce Cellars bottle at Kerið Crater" width="480" height="640" loading="lazy"><figcaption>Kerið Crater, Iceland</figcaption></figure>
+          <figure data-zoom="images/world/chateau-de-chillon.webp" data-caption="Château de Chillon, Lake Geneva"><img src="images/world/chateau-de-chillon.webp" alt="Deuce Cellars bottle at Château de Chillon" width="591" height="737" loading="lazy"><figcaption>Château de Chillon, Lake Geneva</figcaption></figure>
+          <figure data-zoom="images/world/vail.webp" data-caption="Vail, Colorado"><img src="images/world/vail.webp" alt="Deuce Cellars bottle in Vail" width="900" height="675" loading="lazy"><figcaption>Vail, Colorado</figcaption></figure>
+          <figure data-zoom="images/world/gullfoss.webp" data-caption="Gullfoss Falls, Iceland"><img src="images/world/gullfoss.webp" alt="Deuce Cellars bottle at Gullfoss" width="480" height="640" loading="lazy"><figcaption>Gullfoss Falls, Iceland</figcaption></figure>
+        </div>
       </div>
+      <div class="drift-row" data-speed="34">
+        <div class="drift-track">
+          <figure data-zoom="images/world/holland.webp" data-caption="Dam Square, Amsterdam"><img src="images/world/holland.webp" alt="Deuce Cellars bottle in Dam Square, Amsterdam" width="900" height="766" loading="lazy"><figcaption>Dam Square, Amsterdam</figcaption></figure>
+          <figure data-zoom="images/world/oppdal.webp" data-caption="Oppdal, Norway"><img src="images/world/oppdal.webp" alt="Deuce Cellars bottle raised at a gondola station in Oppdal" width="478" height="640" loading="lazy"><figcaption>Oppdal, Norway</figcaption></figure>
+          <figure data-zoom="images/world/lake-geneva.webp" data-caption="Lake Geneva, Swiss Alps"><img src="images/world/lake-geneva.webp" alt="Deuce Cellars bottle over Lake Geneva" width="640" height="634" loading="lazy"><figcaption>Lake Geneva, Swiss Alps</figcaption></figure>
+          <figure data-zoom="images/world/swiss-alps.webp" data-caption="Swiss Alps"><img src="images/world/swiss-alps.webp" alt="Deuce Cellars bottle in the Swiss Alps" width="640" height="418" loading="lazy"><figcaption>Swiss Alps</figcaption></figure>
+          <figure data-zoom="images/world/montreux.webp" data-caption="With Freddie Mercury, Montreux"><img src="images/world/montreux.webp" alt="Deuce Cellars bottle at the Freddie Mercury statue" width="510" height="640" loading="lazy"><figcaption>With Freddie Mercury, Montreux</figcaption></figure>
+          <figure data-zoom="images/world/thingvellir.webp" data-caption="Þingvellir National Park, Iceland"><img src="images/world/thingvellir.webp" alt="Deuce Cellars bottle at Þingvellir National Park" width="480" height="640" loading="lazy"><figcaption>Þingvellir National Park, Iceland</figcaption></figure>
+          <figure data-zoom="images/world/times-square.webp" data-caption="Times Square, New York"><img src="images/world/times-square.webp" alt="Deuce Cellars bottle in Times Square" width="900" height="675" loading="lazy"><figcaption>Times Square, New York</figcaption></figure>
+          <figure data-zoom="images/world/iceland.webp" data-caption="Iceland"><img src="images/world/iceland.webp" alt="Deuce Cellars bottle in Iceland" width="480" height="640" loading="lazy"><figcaption>Iceland</figcaption></figure>
+        </div>
+      </div>
+      <button type="button" class="drift-toggle" aria-label="Pause photos" aria-pressed="false"><span aria-hidden="true"></span></button>
     </div>
   </section>
 
@@ -69,7 +78,7 @@
       <span class="eyebrow">Your turn</span>
       <h2 class="h2">Taking Deuce somewhere?</h2>
       <p class="lede">Send us a photo of your bottle on the road and we may add it to the wall.</p>
-      <div class="actions"><a class="btn" href="mailto:deucecellars@gmail.com?subject=My%20Deuce%20photo">Send your photo</a></div>
+      <div class="actions"><a class="btn" href="mailto:hello@deucecellars.com?subject=My%20Deuce%20photo">Send your photo</a></div>
     </div>
   </section>
 
@@ -95,7 +104,7 @@
       <div>
         <h4>Contact</h4>
         <ul>
-          <li><a href="mailto:deucecellars@gmail.com">deucecellars@gmail.com</a></li>
+          <li><a href="mailto:hello@deucecellars.com">hello@deucecellars.com</a></li>
           <li><a href="tel:+15032018868">(503) 201-8868</a></li>
           <li>Lake Oswego, Oregon</li>
         </ul>
@@ -115,7 +124,8 @@
   </div>
 </footer>
 
-<script src="js/wines.js"></script>
-<script src="js/site.js"></script>
+<script src="js/wines.js?v=2"></script>
+<script src="js/site.js?v=4"></script>
+<script src="js/motion.js?v=6"></script>
 </body>
 </html>

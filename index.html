@@ -8,7 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Barlow:wght@400;500&family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,0..100,0..1;1,9..144,300..700,0..100,0..1&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/style.css?v=2">
+<link rel="stylesheet" href="css/motion.css?v=6">
+<script>/* Turns on the site's movement unless the device asks for reduced motion */(function(d){var c=d.documentElement.classList;try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return}catch(e){}c.add('m');try{if(sessionStorage.getItem('deuce-pour')){sessionStorage.removeItem('deuce-pour');c.add('pour-in')}}catch(e){}try{if(localStorage.getItem('deuce-21')!=='yes')c.add('gate-up')}catch(e){c.add('gate-up')}setTimeout(function(){if(!c.contains('m-ok'))c.remove('m','pour-in','gate-up')},4000)})(document)</script>
 </head>
 <body>
 <div class="announce"><a href="wines.html#library">Limited availability of older vintages, 2011 to 2018 · <span>See the library</span></a></div>
@@ -144,15 +146,20 @@
         <a class="link-arrow" href="world.html">See the journey</a>
       </div>
     </div>
-    <div class="strip">
-      <figure><img src="images/world/french-alps.webp" alt="Deuce Cellars bottle in the French Alps" loading="lazy"><figcaption>French Alps</figcaption></figure>
-      <figure><img src="images/world/lake-lucerne.webp" alt="Deuce Cellars bottle above Lake Lucerne" loading="lazy"><figcaption>Lake Lucerne, Switzerland</figcaption></figure>
-      <figure><img src="images/world/kerid-crater.webp" alt="Deuce Cellars bottle at Kerið Crater" loading="lazy"><figcaption>Kerið Crater, Iceland</figcaption></figure>
-      <figure><img src="images/world/south-korea.webp" alt="Deuce Cellars bottle with a South Korean flag" loading="lazy"><figcaption>South Korea</figcaption></figure>
-      <figure><img src="images/world/holland.webp" alt="Deuce Cellars bottle in Dam Square, Amsterdam" loading="lazy"><figcaption>Amsterdam</figcaption></figure>
-      <figure><img src="images/world/montreux.webp" alt="Deuce Cellars bottle at the Freddie Mercury statue" loading="lazy"><figcaption>Montreux, Switzerland</figcaption></figure>
-      <figure><img src="images/world/times-square.webp" alt="Deuce Cellars bottle in Times Square" loading="lazy"><figcaption>Times Square, New York</figcaption></figure>
-      <figure><img src="images/world/vail.webp" alt="Deuce Cellars bottle in Vail" loading="lazy"><figcaption>Vail, Colorado</figcaption></figure>
+    <div class="drift" data-drift role="region" tabindex="0" aria-label="Photos of Deuce around the world. Left and right arrow keys move them.">
+      <div class="drift-row" data-speed="30">
+        <div class="drift-track">
+          <figure data-zoom="images/world/french-alps.webp" data-caption="French Alps"><img src="images/world/french-alps.webp" alt="Deuce Cellars bottle in the French Alps" width="750" height="618" loading="lazy"><figcaption>French Alps</figcaption></figure>
+          <figure data-zoom="images/world/lake-lucerne.webp" data-caption="Lake Lucerne, Switzerland"><img src="images/world/lake-lucerne.webp" alt="Deuce Cellars bottle above Lake Lucerne" width="640" height="586" loading="lazy"><figcaption>Lake Lucerne, Switzerland</figcaption></figure>
+          <figure data-zoom="images/world/kerid-crater.webp" data-caption="Kerið Crater, Iceland"><img src="images/world/kerid-crater.webp" alt="Deuce Cellars bottle at Kerið Crater" width="480" height="640" loading="lazy"><figcaption>Kerið Crater, Iceland</figcaption></figure>
+          <figure data-zoom="images/world/south-korea.webp" data-caption="South Korea"><img src="images/world/south-korea.webp" alt="Deuce Cellars bottle with a South Korean flag" width="900" height="1201" loading="lazy"><figcaption>South Korea</figcaption></figure>
+          <figure data-zoom="images/world/holland.webp" data-caption="Amsterdam"><img src="images/world/holland.webp" alt="Deuce Cellars bottle in Dam Square, Amsterdam" width="900" height="766" loading="lazy"><figcaption>Amsterdam</figcaption></figure>
+          <figure data-zoom="images/world/montreux.webp" data-caption="Montreux, Switzerland"><img src="images/world/montreux.webp" alt="Deuce Cellars bottle at the Freddie Mercury statue" width="510" height="640" loading="lazy"><figcaption>Montreux, Switzerland</figcaption></figure>
+          <figure data-zoom="images/world/times-square.webp" data-caption="Times Square, New York"><img src="images/world/times-square.webp" alt="Deuce Cellars bottle in Times Square" width="900" height="675" loading="lazy"><figcaption>Times Square, New York</figcaption></figure>
+          <figure data-zoom="images/world/vail.webp" data-caption="Vail, Colorado"><img src="images/world/vail.webp" alt="Deuce Cellars bottle in Vail" width="900" height="675" loading="lazy"><figcaption>Vail, Colorado</figcaption></figure>
+        </div>
+      </div>
+      <button type="button" class="drift-toggle" aria-label="Pause photos" aria-pressed="false"><span aria-hidden="true"></span></button>
     </div>
   </section>
 
@@ -168,12 +175,15 @@
     </div>
   </section>
 
-  <section class="section signup">
+  <section class="section signup signup--cork">
     <div class="wrap">
-      <span class="eyebrow">The Deuce list</span>
-      <h2 class="h2">First word on new releases.</h2>
-      <p class="lede">Release notes, Deuce Days and library offers, a few times a year.</p>
-      <div class="actions"><a class="btn" href="mailto:deucecellars@gmail.com?subject=Add%20me%20to%20the%20Deuce%20list">Join the list</a></div>
+      <figure class="cork"><img src="images/corks.webp" alt="Deuce Cellars corks fitted together in a wooden frame" width="840" height="840" loading="lazy"></figure>
+      <div>
+        <span class="eyebrow">The Deuce list</span>
+        <h2 class="h2">First word on new releases.</h2>
+        <p class="lede">Release notes, Deuce Days and library offers, a few times a year.</p>
+        <div class="actions"><a class="btn" href="mailto:hello@deucecellars.com?subject=Add%20me%20to%20the%20Deuce%20list">Join the list</a></div>
+      </div>
     </div>
   </section>
 
@@ -199,7 +209,7 @@
       <div>
         <h4>Contact</h4>
         <ul>
-          <li><a href="mailto:deucecellars@gmail.com">deucecellars@gmail.com</a></li>
+          <li><a href="mailto:hello@deucecellars.com">hello@deucecellars.com</a></li>
           <li><a href="tel:+15032018868">(503) 201-8868</a></li>
           <li>Lake Oswego, Oregon</li>
         </ul>
@@ -219,8 +229,9 @@
   </div>
 </footer>
 
-<script src="js/wines.js"></script>
-<script src="js/site.js"></script>
+<script src="js/wines.js?v=2"></script>
+<script src="js/site.js?v=4"></script>
+<script src="js/motion.js?v=6"></script>
 
 </body>
 </html>

@@ -159,14 +159,14 @@ p { margin: 0 0 1em; }
 .hero > img, .hero > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 60% 45%; }
 .hero > video { object-position: 50% 50%; }
 /* Pause / play for the hero video */
-.video-toggle {
+.video-toggle, .drift-toggle {
   position: absolute; z-index: 2; right: max(16px, var(--gutter)); bottom: 22px;
   width: 44px; height: 44px; border-radius: 50%; border: 1px solid rgba(246, 242, 234, .55);
   background: rgba(20, 13, 11, .35); cursor: pointer; display: grid; place-items: center;
 }
-.video-toggle:hover { background: rgba(20, 13, 11, .6); }
-.video-toggle span { width: 12px; height: 14px; border-left: 4px solid var(--paper); border-right: 4px solid var(--paper); }
-.video-toggle[aria-pressed="true"] span {
+.video-toggle:hover, .drift-toggle:hover { background: rgba(20, 13, 11, .6); }
+.video-toggle span, .drift-toggle span { width: 12px; height: 14px; border-left: 4px solid var(--paper); border-right: 4px solid var(--paper); }
+.video-toggle[aria-pressed="true"] span, .drift-toggle[aria-pressed="true"] span {
   width: 0; height: 0; border-right: 0; border-left: 13px solid var(--paper);
   border-top: 8px solid transparent; border-bottom: 8px solid transparent; margin-left: 4px;
 }
@@ -371,23 +371,25 @@ p { margin: 0 0 1em; }
 .method b { display: block; font: 600 18px/1.2 var(--cond); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
 .method p { font-size: 15px; color: var(--ink-2); margin: 0; }
 
-/* Around the world strip */
-.strip {
-  display: grid; grid-auto-flow: column; grid-auto-columns: clamp(220px, 24vw, 320px); gap: 16px;
-  --edge: max(var(--gutter), calc((100vw - var(--wrap)) / 2 + var(--gutter)));
-  overflow-x: auto; scroll-snap-type: x mandatory; padding: 0 var(--edge) 12px;
-  scroll-padding-inline: var(--edge); scrollbar-width: thin;
+/* Around the world: photos drifting edge to edge */
+.drift { --drift-h: clamp(260px, 33vw, 480px); --drift-gap: 8px; position: relative; display: grid; gap: var(--drift-gap); width: 100%; }
+.drift--wall { --drift-h: clamp(220px, 27vw, 400px); }
+.drift:focus-visible { outline: 2px solid var(--paper); outline-offset: -4px; }
+.drift-section { background: var(--night); padding: 8px 0; }
+.drift-row { overflow-x: auto; scrollbar-width: none; cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.drift-row::-webkit-scrollbar { display: none; }
+.drift.is-live .drift-row { overflow: hidden; }
+.drift-row.is-dragging { cursor: grabbing; }
+.drift-track { display: flex; gap: var(--drift-gap); padding-right: var(--drift-gap); width: max-content; will-change: transform; }
+.drift figure { position: relative; flex: none; margin: 0; }
+.drift figure::after { content: ''; position: absolute; inset: 60% 0 0; background: linear-gradient(0deg, rgba(20, 13, 11, .6), rgba(20, 13, 11, 0)); pointer-events: none; }
+.drift img { display: block; height: var(--drift-h); width: auto; max-width: none; -webkit-user-drag: none; }
+.drift figcaption {
+  position: absolute; z-index: 1; left: 14px; right: 14px; bottom: 12px; pointer-events: none;
+  font: 500 13px/1.3 var(--cond); letter-spacing: .14em; text-transform: uppercase; color: var(--paper);
 }
-.strip figure { margin: 0; scroll-snap-align: start; }
-.strip img { width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
-.strip figcaption, .gallery figcaption {
-  margin-top: 10px; font: 500 13px/1.3 var(--cond); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-2);
-}
-.section--night .strip figcaption { color: rgba(246, 242, 234, .7); }
-
-.gallery { columns: 3 280px; column-gap: 20px; }
-.gallery figure { margin: 0 0 28px; break-inside: avoid; }
-.gallery img { width: 100%; }
+.drift-toggle { display: none; }
+.drift.is-live .drift-toggle { display: grid; right: 16px; bottom: 16px; }
 
 /* Big-word band (Walla Walla Vintners "VISIT") */
 .bigword {
@@ -423,6 +425,20 @@ p { margin: 0 0 1em; }
 .signup .h2 { margin-bottom: 14px; }
 .signup .lede { margin: 0 auto; }
 .signup .actions { justify-content: center; }
+/* Home page: the framed corks beside the mailing list. The photo is small, so it stays under 400px wide. */
+.signup--cork { text-align: left; }
+.signup--cork .wrap { display: grid; grid-template-columns: minmax(0, 380px) minmax(0, 30rem); gap: 32px clamp(32px, 6vw, 88px); align-items: center; justify-content: center; }
+.signup--cork .cork { margin: 0; }
+.signup--cork .cork img { display: block; width: 100%; height: auto; }
+.signup--cork .lede { margin: 0; }
+.signup--cork .actions { justify-content: flex-start; }
+@media (max-width: 760px) {
+  .signup--cork { text-align: center; }
+  .signup--cork .wrap { grid-template-columns: minmax(0, 1fr); justify-items: center; }
+  .signup--cork .cork { max-width: 300px; }
+  .signup--cork .lede { margin: 0 auto; }
+  .signup--cork .actions { justify-content: center; }
+}
 
 /* Footer */
 .site-footer { background: var(--night); color: rgba(246, 242, 234, .74); padding: 72px 0 36px; font-size: 15px; }
