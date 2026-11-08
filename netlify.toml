@@ -30,9 +30,20 @@
   [headers.values]
     Cache-Control = "public, max-age=86400, must-revalidate"
 
-# Old Duda page addresses go here before launch, so links and search results keep working.
-# Example (fill in the real old paths):
-# [[redirects]]
-#   from = "/shop"
-#   to = "/wines.html"
-#   status = 301
+# Old Duda page addresses, so links and search results keep working after launch.
+# Duda's sitemap listed /, /where-to-buy, /deuce-around-the-world and /private-tastings.
+# / and /where-to-buy already resolve on Netlify (where-to-buy.html is served at /where-to-buy).
+[[redirects]]
+  from = "/deuce-around-the-world"
+  to = "/world.html"
+  status = 301
+
+[[redirects]]
+  from = "/private-tastings"
+  to = "/visit.html"
+  status = 301
+
+[[redirects]]
+  from = "/home"
+  to = "/"
+  status = 301
